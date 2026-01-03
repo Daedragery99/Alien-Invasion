@@ -2,12 +2,14 @@ import sys
 
 import pygame
 
+from random import randint
+
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from galaxy import Galaxy
-from random import randint
+
 
 class AlienInvasion:
     """The class that manages game assests and logic"""
@@ -36,7 +38,8 @@ class AlienInvasion:
         while True:
             self._check_events()
             self.ship.update()
-            self._update_bullets()          
+            self._update_bullets()
+            self._update_aliens()          
             self._update_screen()
             self.clock.tick(60)
 
@@ -113,13 +116,28 @@ class AlienInvasion:
         new_alien.rect.y = y_position
         self.aliens.add(new_alien)
 
+    def _check_fleet_edges(self):
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                self._change_fleet_direction()
+                break
+
+    def _change_fleet_direction(self):
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.settings.fleet_drop_speed
+        self.settings.fleet_direction *= -1
+
+    def _update_aliens(self):
+        self._check_fleet_edges()
+        self.aliens.update()
+
     def _create_galaxy(self, x_position, y_position):
         new_galaxy = Galaxy(self)
         new_galaxy.rect.x = x_position
         new_galaxy.rect.y = y_position
         self.galaxies.add(new_galaxy)
 
-    def _create_solar_system(self):
+    def _create_solar_system(self): #TODO implement greater variety
         galaxy = Galaxy(self)
         galaxy_widht, galaxy_height = galaxy.rect.size
 
@@ -133,8 +151,6 @@ class AlienInvasion:
                 current_x += 2 * galaxy_widht
             current_x = galaxy_widht
             current_y += 2 * galaxy_height
-
-
 
 
 if __name__ == '__main__':
