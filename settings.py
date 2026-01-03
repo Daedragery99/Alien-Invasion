@@ -3,7 +3,7 @@ class Settings:
     def __init__(self):
         self.screen_widht = 1200
         self.screen_height = 800
-        self.bg_colort = (127, 127, 127)
+        self.bg_colort = (0, 0, 0)
 
         #Ship settings
         self.ship_speed = 6.5
@@ -14,3 +14,6 @@ class Settings:
         self.bullet_height = 15
         self.bullet_color = (0, 172, 245)
         self.bullets_allowed = 3
+
+        #galaxy settings
+        self.dawing_chance = 10 #the galaxy will be drawn by the 1/drawing_chance

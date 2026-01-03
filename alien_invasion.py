@@ -6,6 +6,8 @@ from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+from galaxy import Galaxy
+from random import randint
 
 class AlienInvasion:
     """The class that manages game assests and logic"""
@@ -25,8 +27,10 @@ class AlienInvasion:
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
+        self.galaxies = pygame.sprite.Group()
 
         self._create_fleet()
+        self._create_solar_system()
 
     def run_game(self):
         while True:
@@ -49,10 +53,12 @@ class AlienInvasion:
 
     def _update_screen(self):
         self.screen.fill(self.settings.bg_colort)
+        self.galaxies.draw(self.screen)
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.ship.blitme()
         self.aliens.draw(self.screen)
+        
 
         pygame.display.flip() 
     
@@ -106,6 +112,28 @@ class AlienInvasion:
         new_alien.rect.x = x_position
         new_alien.rect.y = y_position
         self.aliens.add(new_alien)
+
+    def _create_galaxy(self, x_position, y_position):
+        new_galaxy = Galaxy(self)
+        new_galaxy.rect.x = x_position
+        new_galaxy.rect.y = y_position
+        self.galaxies.add(new_galaxy)
+
+    def _create_solar_system(self):
+        galaxy = Galaxy(self)
+        galaxy_widht, galaxy_height = galaxy.rect.size
+
+        current_x, current_y = galaxy_widht, galaxy_height
+        while current_y < (self.settings.screen_height - galaxy_height):
+            while current_x < (self.settings.screen_widht - galaxy_widht):
+                #draw a galaxy with settings chance
+                decider = randint(1,self.settings.dawing_chance)
+                if decider == 1:
+                    self._create_galaxy(current_x, current_y)
+                current_x += 2 * galaxy_widht
+            current_x = galaxy_widht
+            current_y += 2 * galaxy_height
+
 
 
 
