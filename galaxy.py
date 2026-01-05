@@ -15,7 +15,7 @@ class Galaxy(Sprite):
         elif decider == 1:
             self.image = pygame.image.load('C:\\Users\\Gergo\\Desktop\\Python\\Alien Invasion\\images\\galaxy_4.png')
 
-        angle = randint(0,3) * 90
+        angle = randint(0,12) * 30
         self.image = pygame.transform.rotate(self.image, angle)
         self.rect = self.image.get_rect()
 

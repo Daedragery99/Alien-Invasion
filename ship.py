@@ -15,9 +15,7 @@ class Ship:
         self.moving_left = False
 
         self.x = float(self.rect.x)
-
         
-
     def update(self):
         """Update the ship's positon based on movement flags"""
         if self.moving_right and self.rect.right < self.screen_rect.right:
@@ -29,3 +27,7 @@ class Ship:
 
     def blitme(self):
         self.screen.blit(self.image, self.rect)
+
+    def center_ship(self):
+        self.rect.midbottom = self.screen_rect.midbottom
+        self.x = float(self.rect.x)

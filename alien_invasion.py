@@ -1,4 +1,5 @@
 import sys
+from time import sleep
 
 import pygame
 
@@ -9,6 +10,7 @@ from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from galaxy import Galaxy
+from gamestat import GameStats
 
 
 class AlienInvasion:
@@ -25,6 +27,7 @@ class AlienInvasion:
         self.settings.screen_height = self.screen.get_rect().height
         self.settings.screen_widht = self.screen.get_rect().width
         pygame.display.set_caption("Alien Invasion")
+        self.stats = GameStats(self)
 
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
@@ -33,6 +36,8 @@ class AlienInvasion:
 
         self._create_fleet()
         self._create_solar_system()
+
+        
 
     def run_game(self):
         while True:
@@ -96,6 +101,16 @@ class AlienInvasion:
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
             #print(len(self.bullets))
+        self._check_bullet_alien_collison()       
+        
+    def _check_bullet_alien_collison(self):
+         #get rid of bullets and aliens if they collide
+        collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+        
+        #respawn the fleet after they got cleared out
+        if not self.aliens:
+            self.bullets.empty()
+            self._create_fleet()
 
     def _create_fleet(self):
         alien = Alien(self)
@@ -131,6 +146,13 @@ class AlienInvasion:
         self._check_fleet_edges()
         self.aliens.update()
 
+        #look for enemy-player collision
+        if pygame.sprite.spritecollideany(self.ship, self.aliens): #reimplement at shooting so when an alien is hit it explodes #TODO target_alien.explode()
+            print("Ship Hit!")
+            self._ship_hit()
+
+        self._check_alien_hit_bottom()
+
     def _create_galaxy(self, x_position, y_position):
         new_galaxy = Galaxy(self)
         new_galaxy.rect.x = x_position
@@ -151,6 +173,23 @@ class AlienInvasion:
                 current_x += 2 * galaxy_widht
             current_x = galaxy_widht
             current_y += 2 * galaxy_height
+
+    def _ship_hit(self):
+        self.stats.ship_left -= 1
+
+        self.bullets.empty()
+        self.aliens.empty()
+
+        self._create_fleet
+        self.ship.center_ship()
+
+        sleep(0.5)
+
+    def _check_alien_hit_bottom(self):
+        for alien in self.aliens.sprites():
+            if alien.rect.bottom >= self.settings.screen_height:
+                self._ship_hit()
+                break
 
 
 if __name__ == '__main__':

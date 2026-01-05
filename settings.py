@@ -7,6 +7,7 @@ class Settings:
 
         #Ship settings
         self.ship_speed = 6.5
+        self.ship_limit = 3
 
         #bullet settings
         self.bullet_speed = 12.0
@@ -19,7 +20,9 @@ class Settings:
         self.dawing_chance = 10 #the galaxy will be drawn by the 1/drawing_chance
 
         #alien settings
-        self.alien_speed = 1.0
+        self.alien_speed = 2.0
         self.fleet_drop_speed = 10
         #fleet direction 1 = right; -1 = left
         self.fleet_direction = 1
+
+        
