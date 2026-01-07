@@ -11,6 +11,7 @@ from bullet import Bullet
 from alien import Alien
 from galaxy import Galaxy
 from gamestat import GameStats
+from explosion import Explosion
 
 
 class AlienInvasion:
@@ -33,6 +34,7 @@ class AlienInvasion:
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
         self.galaxies = pygame.sprite.Group()
+        self.explosions = pygame.sprite.Group()
 
         self._create_fleet()
         self._create_solar_system()
@@ -44,6 +46,7 @@ class AlienInvasion:
             self._check_events()
             self.ship.update()
             self._update_bullets()
+            self._update_explosions()
             self._update_aliens()          
             self._update_screen()
             self.clock.tick(60)
@@ -66,8 +69,7 @@ class AlienInvasion:
             bullet.draw_bullet()
         self.ship.blitme()
         self.aliens.draw(self.screen)
-        
-
+        self.explosions.draw(self.screen)
         pygame.display.flip() 
     
     def _key_down_events(self, event):
@@ -106,8 +108,12 @@ class AlienInvasion:
     def _check_bullet_alien_collison(self):
          #get rid of bullets and aliens if they collide
         collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
-        
-        #respawn the fleet after they got cleared out
+        #make hit aliens explode
+        for hit_aliens in collisions.values():
+            for hit_alien in hit_aliens:
+                self._make_it_explode(hit_alien)
+
+        #respawn the fleet after they goqt cleared out
         if not self.aliens:
             self.bullets.empty()
             self._create_fleet()
@@ -147,8 +153,7 @@ class AlienInvasion:
         self.aliens.update()
 
         #look for enemy-player collision
-        if pygame.sprite.spritecollideany(self.ship, self.aliens): #reimplement at shooting so when an alien is hit it explodes #TODO target_alien.explode()
-            print("Ship Hit!")
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
             self._ship_hit()
 
         self._check_alien_hit_bottom()
@@ -190,6 +195,15 @@ class AlienInvasion:
             if alien.rect.bottom >= self.settings.screen_height:
                 self._ship_hit()
                 break
+
+    def _update_explosions(self):
+        self.explosions.update()
+
+    def _make_it_explode(self, explode_object):
+        new_exposion = Explosion(self)
+        new_exposion.rect.x = explode_object.rect.x
+        new_exposion.rect.y = explode_object.rect.y
+        self.explosions.add(new_exposion)
 
 
 if __name__ == '__main__':
