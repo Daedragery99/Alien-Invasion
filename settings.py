@@ -20,7 +20,7 @@ class Settings:
         self.dawing_chance = 10 #the galaxy will be drawn by the 1/drawing_chance
 
         #alien settings
-        self.alien_speed = 2.0
+        self.alien_speed = 3.0
         self.fleet_drop_speed = 10
         #fleet direction 1 = right; -1 = left
         self.fleet_direction = 1
